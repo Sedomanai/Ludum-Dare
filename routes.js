@@ -1,3 +1,5 @@
+const path = require('path');
+
 function setupRoutes(app, db) {
 	app.get('/', (req, res) => {
 		res.sendFile(path.join(__dirname, 'public', 'test.html'));

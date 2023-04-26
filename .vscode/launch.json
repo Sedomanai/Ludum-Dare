@@ -7,16 +7,9 @@
 		{
 			"type": "node",
 			"request": "launch",
-			"name": "Development Mode",
+			"name": "Launch",
 			"runtimeExecutable": "npm",
-			"runtimeArgs": ["run", "dev"]
-		},
-		{
-			"type": "node",
-			"request": "launch",
-			"name": "Production Mode",
-			"runtimeExecutable": "npm",
-			"runtimeArgs": ["run", "prod"]
+			"runtimeArgs": ["start"]
 		}
 	]
 }

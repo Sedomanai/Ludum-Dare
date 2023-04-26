@@ -66,4 +66,4 @@ function startServer() {
 	});
 }
 
-main().catch(err);
+main();

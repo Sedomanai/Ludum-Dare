@@ -21,7 +21,7 @@ async function main() {
 			useUnifiedTopology: true,
 		});
 
-		console.log(`MongoDB Connection Established.`);
+		console.log(`MongoDB Connection Established: User: ${user}, Cluster:${cluster}, Database:${database}`);
 		const db = client.db();
 
 		process.on('SIGINT', () => {

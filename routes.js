@@ -15,11 +15,12 @@ function setupRoutes(app, db) {
 			.then(doc => {
 				res.setHeader('Content-Type', 'text/plain').send(doc.button.toString());
 			})
-			.catch(err =>
+			.catch(err => {
+				console.error('Error while finding the document:', err);
 				res.status(500).json({
 					error: 'Internal server error: could not pull data from button.',
-				})
-			);
+				});
+			});
 	});
 
 	app.post('/game/button', (req, res) => {
@@ -28,6 +29,7 @@ function setupRoutes(app, db) {
 			.updateOne({}, { $set: { button: parseInt(req.body) } })
 			.then(doc => res.sendStatus(200))
 			.catch(err => {
+				console.error('Error while updating the document:', err);
 				res.status(500).json({
 					error: 'Internal server error: could not push data to button.',
 				});

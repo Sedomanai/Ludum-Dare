@@ -1,13 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
-
-
+using UnityEngine.Networking;
+using System.Net;
+using System.Net.Http;
 
 public class Networking : MonoBehaviour
 {
@@ -23,35 +22,55 @@ public class Networking : MonoBehaviour
     "https://twowolf-ld53.herokuapp.com";
 #endif
 
-    HttpClient client = new HttpClient();
-    async void Start()
-    {
-        
-        var response = await client.GetAsync(host + "/game/helloworld");
-        string result = await response.Content.ReadAsStringAsync();
-        Debug.Log(result);
-
-        PullButton();
+    void Start() {
+        StartCoroutine(PullFromNet());
     }
 
-    async void PullButton() {
-        var response = await client.GetAsync(host + "/game/button");
-        Debug.Log(response);
-        string result = await response.Content.ReadAsStringAsync();
-        Debug.Log(result);
-        times = int.Parse(result);
-        txt.text = times.ToString();
+    IEnumerator PullFromNet() {
+        UnityWebRequest req = UnityWebRequest.Get(host + "/game/helloworld");
+        req.SetRequestHeader("Content-Type", "text/plain");
+        yield return req.SendWebRequest();
+        if (req.result == UnityWebRequest.Result.Success) {
+            Debug.Log(req.downloadHandler.text);
+        } req.Dispose();
 
-        Debug.Log(result);
+        req = UnityWebRequest.Get(host + "/game/button");
+        req.SetRequestHeader("Content-Type", "text/plain");
+        yield return req.SendWebRequest();
+        if (req.result == UnityWebRequest.Result.Success) {
+            times = int.Parse(req.downloadHandler.text);
+            txt.text = times.ToString();
+            Debug.Log($"Pulled Button From Net {times}");
+        } req.Dispose();
     }
 
-    public async void PushButton() {
+    Queue<Action> requestQueue = new Queue<Action>();
+    bool isCoroutineRunning = false;
+    public void PushButton() {
         txt.text = (++times).ToString();
-        var data = new StringContent($"{times}", Encoding.UTF8, "text/plain");
-        var response = await client.PostAsync(host + "/game/button", data);
-        string result = await response.Content.ReadAsStringAsync();
+        requestQueue.Enqueue(() => StartCoroutine(PushFromNet(txt.text)));
+        if (!isCoroutineRunning) {
+            ProcessNextRequest();
+        }
+    }
+    void ProcessNextRequest() {
+        if (requestQueue.Count > 0) {
+            Action nextRequest = requestQueue.Dequeue();
+            nextRequest();
+        }
+    }
 
-        Debug.Log(result);
+    IEnumerator PushFromNet(string value) {
+        isCoroutineRunning = true;
+        using (UnityWebRequest req = UnityWebRequest.Post(host + "/game/button", value)) {
+            req.SetRequestHeader("Content-Type", "text/plain");
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.Success) {
+                Debug.Log($"Pushed Button to Net {value}: {req.downloadHandler.text}");
+            }
+        }
+        isCoroutineRunning = false;
+        ProcessNextRequest();
     }
 
     // Update is called once per frame

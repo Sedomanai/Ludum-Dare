@@ -27,21 +27,23 @@ public class Networking : MonoBehaviour
     }
 
     IEnumerator PullFromNet() {
-        UnityWebRequest req = UnityWebRequest.Get(host + "/game/helloworld");
-        req.SetRequestHeader("Content-Type", "text/plain");
-        yield return req.SendWebRequest();
-        if (req.result == UnityWebRequest.Result.Success) {
-            Debug.Log(req.downloadHandler.text);
-        } req.Dispose();
+        //using (UnityWebRequest req = UnityWebRequest.Get(host + "/game/helloworld")) {
+        //    req.SetRequestHeader("Content-Type", "text/plain");
+        //    yield return req.SendWebRequest();
+        //    if (req.result == UnityWebRequest.Result.Success) {
+        //        Debug.Log(req.downloadHandler.text);
+        //    }
+        //};
 
-        req = UnityWebRequest.Get(host + "/game/button");
-        req.SetRequestHeader("Content-Type", "text/plain");
-        yield return req.SendWebRequest();
-        if (req.result == UnityWebRequest.Result.Success) {
-            times = int.Parse(req.downloadHandler.text);
-            txt.text = times.ToString();
-            Debug.Log($"Pulled Button From Net {times}");
-        } req.Dispose();
+        using (UnityWebRequest req = UnityWebRequest.Get(host + "/game/button")) {
+            req.SetRequestHeader("Content-Type", "text/plain");
+            yield return req.SendWebRequest();
+            if (req.result == UnityWebRequest.Result.Success) {
+                times = int.Parse(req.downloadHandler.text);
+                txt.text = times.ToString();
+                Debug.Log($"Pulled Button From Net {times}");
+            }
+        }
     }
 
     Queue<Action> requestQueue = new Queue<Action>();

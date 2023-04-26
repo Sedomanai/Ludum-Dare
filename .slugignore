@@ -1,0 +1,6 @@
+/unity/
+/node_modules/
+
+/.vscode
+/.env
+/.env_copy

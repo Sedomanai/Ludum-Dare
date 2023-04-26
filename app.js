@@ -39,7 +39,7 @@ async function main() {
 }
 
 function setupAppUsage() {
-	app.use(rateLimiter({ windowMs: 60 * 1000, max: 15 }));
+	if (process.env.NODE_ENV === 'production') app.use(rateLimiter({ windowMs: 5 * 60 * 1000, max: 20 }));
 
 	//Serve .br files with Brotli compression
 	app.get('*.br', function (req, res, next) {
@@ -54,6 +54,7 @@ function setupAppUsage() {
 	app.use('/static/', express.static(path.join(__dirname, 'public')));
 	app.use(express.urlencoded({ extended: false }));
 	app.use(express.json());
+	app.use(express.text());
 }
 
 function startServer() {

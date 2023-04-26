@@ -2,19 +2,36 @@ const path = require('path');
 
 function setupRoutes(app, db) {
 	app.get('/', (req, res) => {
-		res.sendFile(path.join(__dirname, 'public', 'test.html'));
+		res.sendFile(path.join(__dirname, 'public', 'index.html'));
 	});
 
-	app.post('/game/test/pushbtn', (req, res) => {
-		console.log(`Press Button ${req.body.times}!`);
-		db.collection('test')
-			.updateOne({}, { $inc: { button_pressed: req.body.times } })
-			.then(doc => res.sendStatus(200))
+	app.get('/game/helloworld/', (req, res) => {
+		res.setHeader('Content-Type', 'text/plain').send('Hello World');
+	});
+
+	app.get('/game/button', (req, res) => {
+		db.collection('Test')
+			.findOne({})
+			.then(doc => {
+				res.setHeader('Content-Type', 'text/plain').send(doc.button.toString());
+			})
 			.catch(err =>
 				res.status(500).json({
-					error: 'Internal server error: could not push data to button.',
+					error: 'Internal server error: could not pull data from button.',
 				})
 			);
+	});
+
+	app.post('/game/button', (req, res) => {
+		console.log(`Press Button ${req.body}!`);
+		db.collection('Test')
+			.updateOne({}, { $set: { button: parseInt(req.body) } })
+			.then(doc => res.sendStatus(200))
+			.catch(err => {
+				res.status(500).json({
+					error: 'Internal server error: could not push data to button.',
+				});
+			});
 	});
 
 	// app.post('/unity/hello', (req, res, next) => {

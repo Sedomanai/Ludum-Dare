@@ -1,5 +1,6 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
+const cors = require('cors');
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -40,6 +41,7 @@ async function main() {
 
 function setupAppUsage() {
 	//if (process.env.NODE_ENV === 'production') app.use(rateLimiter({ windowMs: 5 * 60 * 1000, max: 20 }));
+	app.use(cors());
 
 	//Serve .br files with Brotli compression
 	app.get('*.br', function (req, res, next) {

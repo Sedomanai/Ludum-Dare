@@ -9,7 +9,7 @@ function setupRoutes(app, db) {
 		res.setHeader('Content-Type', 'text/plain').send('Hello World');
 	});
 
-	app.get('/game/button', (req, res) => {
+	app.post('/game/pullbutton', (req, res) => {
 		db.collection('Test')
 			.findOne({})
 			.then(doc => {

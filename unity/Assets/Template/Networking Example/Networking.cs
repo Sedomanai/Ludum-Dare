@@ -27,15 +27,8 @@ public class Networking : MonoBehaviour
     }
 
     IEnumerator PullFromNet() {
-        //using (UnityWebRequest req = UnityWebRequest.Get(host + "/game/helloworld")) {
-        //    req.SetRequestHeader("Content-Type", "text/plain");
-        //    yield return req.SendWebRequest();
-        //    if (req.result == UnityWebRequest.Result.Success) {
-        //        Debug.Log(req.downloadHandler.text);
-        //    }
-        //};
-
-        using (UnityWebRequest req = UnityWebRequest.Get(host + "/game/button")) {
+        string dat = "";
+        using (UnityWebRequest req = UnityWebRequest.Post(host + "/game/pullbutton", dat)) {
             req.SetRequestHeader("Content-Type", "text/plain");
             yield return req.SendWebRequest();
             if (req.result == UnityWebRequest.Result.Success) {

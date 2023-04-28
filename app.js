@@ -40,7 +40,7 @@ async function main() {
 }
 
 function setupAppUsage() {
-	//if (process.env.NODE_ENV === 'production') app.use(rateLimiter({ windowMs: 5 * 60 * 1000, max: 20 }));
+	if (process.env.NODE_ENV === 'production') app.use(rateLimiter({ windowMs: 5 * 60 * 1000, max: 25 }));
 	app.use(cors());
 
 	//Serve .br files with Brotli compression
@@ -54,9 +54,8 @@ function setupAppUsage() {
 
 	//app.use(compressor); // this is slow for some reason. we'll look into it later.
 	app.use('/static/', express.static(path.join(__dirname, 'public')));
-	app.use(express.urlencoded({ extended: false }));
 	app.use(express.json());
-	app.use(express.text());
+	//app.use(express.urlencoded({ extended: false }));
 }
 
 function startServer() {

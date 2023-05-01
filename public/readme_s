@@ -1,5 +1,0 @@
-Build WebGL unity in this folder.
-The wasm and loader will be located in the Build folder.
-The html should be index.html.
-
-If you're using .jslib, you're going to have to add the script manually.
